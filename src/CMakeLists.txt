@@ -31,9 +31,12 @@ if(BUILD_SHARED)
 	  # need to explicitly link to the math library because the CMake/Android toolchains may not do it automatically
 	  target_link_libraries(chipmunk m)
   endif(ANDROID OR UNIX)
-  install(TARGETS chipmunk RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-                           LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-                           ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+  install(
+    TARGETS chipmunk
+    EXPORT ChipmunkTargets
+    RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+    ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 endif(BUILD_SHARED)
 
 if(BUILD_STATIC)
@@ -48,12 +51,19 @@ if(BUILD_STATIC)
   # Sets chipmunk_static to output "libchipmunk.a" not "libchipmunk_static.a"
   set_target_properties(chipmunk_static PROPERTIES OUTPUT_NAME chipmunk)
   if(INSTALL_STATIC)
-    install(TARGETS chipmunk_static ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
+    install(
+      TARGETS chipmunk_static
+      EXPORT ChipmunkTargets
+      ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
   endif(INSTALL_STATIC)
 endif(BUILD_STATIC)
 
 if(BUILD_SHARED OR INSTALL_STATIC)
   # FIXME: change to PUBLIC_HEADER to allow building frameworks
-  install(FILES ${chipmunk_public_header} DESTINATION include/chipmunk)
-  install(FILES ${chipmunk_constraint_header} DESTINATION include/chipmunk/constraints)
+  install(
+    FILES ${chipmunk_public_header}
+    DESTINATION include/chipmunk)
+  install(
+    FILES ${chipmunk_constraint_header}
+    DESTINATION include/chipmunk/constraints)
 endif(BUILD_SHARED OR INSTALL_STATIC)

@@ -19,6 +19,7 @@ endif()
 #   -D BIN_INSTALL_DIR newbin
 set(LIB_INSTALL_DIR lib CACHE STRING "Install location of libraries")
 set(BIN_INSTALL_DIR bin CACHE STRING "Install location of executables")
+set(CMAKE_INSTALL_DIR cmake CACHE STRING "Installation directory for CMake files")
 
 # other options for the build, you can i.e. activate the shared library by passing
 #   -D BUILD_SHARED=ON
@@ -65,3 +66,24 @@ add_subdirectory(src)
 if(BUILD_DEMOS)
   add_subdirectory(demo)
 endif()
+
+configure_file(ChipmunkConfig.cmake.in
+  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/ChipmunkConfig.cmake" @ONLY)
+configure_file(ChipmunkConfigVersion.cmake.in
+  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/ChipmunkConfigVersion.cmake" @ONLY)
+
+export(
+  TARGETS chipmunk
+  FILE "${PROJECT_BINARY_DIR}/ChipmunkTargets.cmake")
+
+install(
+  FILES
+    "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/ChipmunkConfig.cmake"
+    "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/ChipmunkConfigVersion.cmake"
+  DESTINATION "${CMAKE_INSTALL_DIR}"
+  COMPONENT dev)
+
+install(
+  EXPORT ChipmunkTargets
+  DESTINATION "${CMAKE_INSTALL_DIR}"
+  COMPONENT dev)
